@@ -1,98 +1,169 @@
-<!-- <html>
-
-<head>
-</head>
-
-<body>
-    <h1> Welocome, {{ user_id }} to your Dashboard!</h1>
-    <form method="post" action="/logout">
-        <input type="submit" value="Logout">
-    </form>
-    <form method="post" action="/delete_account/{{ user_id }}">
-        <input type="submit" value="Delete Account">
-    </form>
-    <form method="get" action="/update_email/{{ user_id }}">
-        <input type="submit" value="Update Email">
-    </form>
-    <a href="{{ url_for('fetch_all') }}">List Users</a>
-
-</body>
-
-</html> -->
-
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
-    <title>Dashboard</title>
+    <title>3D Dashboard</title>
 
-    <!-- Bootstrap 5 -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: radial-gradient(circle at top, #0f2027, #000);
+        }
+
+        /* 🌌 Animated Background */
+        .bg span {
+            position: absolute;
+            width: 25px;
+            height: 25px;
+            background: rgba(255,255,255,0.08);
+            border-radius: 50%;
+            bottom: -150px;
+            animation: rise 20s linear infinite;
+        }
+
+        .bg span:nth-child(1) { left: 10%; animation-duration: 18s; }
+        .bg span:nth-child(2) { left: 30%; animation-duration: 22s; }
+        .bg span:nth-child(3) { left: 60%; animation-duration: 15s; }
+        .bg span:nth-child(4) { left: 80%; animation-duration: 25s; }
+
+        @keyframes rise {
+            0% { transform: translateY(0); opacity: 0.6; }
+            100% { transform: translateY(-1000px); opacity: 0; }
+        }
+
+        /* 💎 Card */
+        .card {
+            width: 400px;
+            padding: 40px;
+            border-radius: 25px;
+            background: rgba(255,255,255,0.08);
+            backdrop-filter: blur(20px);
+            box-shadow: 0 30px 70px rgba(0,0,0,0.7);
+            text-align: center;
+            transform: perspective(1000px) rotateX(8deg) rotateY(8deg);
+            transition: 0.5s;
+            z-index: 10;
+        }
+
+        .card:hover {
+            transform: perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1.05);
+        }
+
+        /* 👤 Avatar */
+        .avatar {
+            width: 90px;
+            height: 90px;
+            background: linear-gradient(45deg, #00c6ff, #0072ff);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 35px;
+            margin: auto;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        h2 {
+            color: white;
+            margin-bottom: 10px;
+        }
+
+        p {
+            color: #bbb;
+            margin-bottom: 30px;
+        }
+
+        /* 🔘 Buttons */
+        .btn {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 25px;
+            margin-bottom: 15px;
+            font-size: 15px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #00c6ff, #0072ff);
+            color: white;
+        }
+
+        .btn-danger {
+            background: linear-gradient(45deg, #ff416c, #ff4b2b);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: transparent;
+            border: 1px solid #aaa;
+            color: #aaa;
+        }
+
+        .btn-success {
+            background: linear-gradient(45deg, #00b09b, #96c93d);
+            color: white;
+        }
+
+        .btn:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+        }
+
+    </style>
 </head>
 
-<body class="bg-light d-flex align-items-center" style="min-height: 100vh;">
+<body>
 
-    <div class="container">
+<!-- 🌌 Background -->
+<div class="bg">
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+</div>
 
-        <div class="row justify-content-center">
-            <div class="col-md-6">
+<div class="card">
 
-                <div class="card shadow-lg border-0 rounded-4">
-                    <div class="card-body p-5 text-center">
-
-                        <!-- Avatar -->
-                        <div class="mb-4">
-                            <div class="bg-primary text-white rounded-circle d-inline-flex 
-                                    align-items-center justify-content-center"
-                                style="width:80px;height:80px;font-size:30px;">
-                                {{ current_user[0].upper() }}
-                            </div>
-                        </div>
-
-                        <h3 class="fw-bold mb-3">
-                            Welcome, {{ current_user }}
-                        </h3>
-
-                        <p class="text-muted mb-4">
-                            Manage your account settings below.
-                        </p>
-
-                        <!-- Action Buttons -->
-                        <div class="d-grid gap-3">
-
-                            <form method="get" action="/update_email/{{ user_id }}">
-                                <button class="btn btn-primary rounded-pill">
-                                    Update Email
-                                </button>
-                            </form>
-
-                            <form method="post" action="/delete_account/{{ user_id }}">
-                                <button class="btn btn-danger rounded-pill">
-                                    Delete Account
-                                </button>
-                            </form>
-
-                            <form method="post" action="/logout">
-                                <button class="btn btn-outline-secondary rounded-pill">
-                                    Logout
-                                </button>
-                            </form>
-
-                            <a href="{{ url_for('fetch_all') }}" class="btn btn-success rounded-pill">
-                                View All Users
-                            </a>
-
-                        </div>
-
-                    </div>
-                </div>
-
-            </div>
-        </div>
-
+    <div class="avatar">
+        {{ current_user[0].upper() }}
     </div>
 
-</body>
+    <h2>Welcome, {{ current_user }}</h2>
+    <p>Manage your account with style 🚀</p>
 
+    <form method="get" action="/update_email/{{ user_id }}">
+        <button class="btn btn-primary">Update Email</button>
+    </form>
+
+    <form method="post" action="/delete_account/{{ user_id }}">
+        <button class="btn btn-danger">Delete Account</button>
+    </form>
+
+    <form method="post" action="/logout">
+        <button class="btn btn-secondary">Logout</button>
+    </form>
+
+    <a href="{{ url_for('fetch_all') }}">
+        <button class="btn btn-success">View All Users</button>
+    </a>
+
+</div>
+
+</body>
 </html>
